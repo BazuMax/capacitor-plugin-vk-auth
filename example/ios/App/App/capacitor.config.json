@@ -1,0 +1,12 @@
+{
+  "appId": "com.bazumax.capacitor.vkauth.test",
+  "appName": "vk-auth-tests",
+  "bundledWebRuntime": true,
+  "npmClient": "yarn",
+  "webDir": "www",
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 0
+    }
+  }
+}
