@@ -5,5 +5,6 @@ declare module '@capacitor/core' {
 }
 
 export interface VKAuthPlugin {
-  echo(options: { value: string }): Promise<{ value: string }>;
+  initWithId(options: { id: string }): Promise<{ value: string }>;
+  auth(options: { scope: Array<string> }): Promise<{ value: any }>;
 }

@@ -9,9 +9,14 @@ export class VKAuthWeb extends WebPlugin implements VKAuthPlugin {
     });
   }
 
-  async echo(options: { value: string }): Promise<{ value: string }> {
+  async initWithId(options: { id: string }): Promise<{ value: string }> {
     console.log('ECHO', options);
-    return options;
+    return Promise.resolve({ value: options.id });
+  }
+
+  async auth(options: { scope: string[] }): Promise<{ value: any }> {
+    console.log('ECHO', options);
+    return Promise.resolve({ value: options });
   }
 }
 
