@@ -26,18 +26,42 @@ public class VKAuth: CAPPlugin, VKSdkDelegate, VKSdkUIDelegate {
     
     
     public func vkSdkAccessAuthorizationFinished(with result: VKAuthorizationResult!) {
-//        result.token.
-//        self.bridge.triggerDocumentJSEvent(eventName: "vkAuthFinished", [])
-//        if result.token
+        var resultData: [String: Any] = [:]
+        if (result.error != nil) {
+            resultData = [
+                "result": false,
+                "error": result.description
+            ]
+            return
+        } else if (result.token != nil) {
+            let token = result.token!
+            resultData = [
+                "result": true,
+                "token": token.accessToken as Any,
+                "created": token.created,
+                "expiresIn": token.expiresIn,
+                "userId": token.userId as Any,
+            ]
+            if (result.token.email != nil) {
+                resultData.updateValue(result.token.email!, forKey: "email")
+            }
+        }
+
+        if resultData.isEmpty == false {
+            self.notifyListeners("vkAuthFinished", data: resultData)
+        }
     }
     
     public func vkSdkUserAuthorizationFailed() {
-        print("vkSdkUserAuthorizationFailed")
+        self.notifyListeners("vkAuthFinished", data: [
+            "result": false,
+            "message": "UserAuthenticationFailed"
+        ])
     }
     
     
-    var VK_APP_ID = "123456"
-    var sdkInstance: VKSdk? = nil
+    var VK_APP_ID   : String = "123"
+    var sdkInstance : VKSdk? = nil
     
     
     @objc func initWithId(_ call: CAPPluginCall) {
@@ -45,24 +69,33 @@ public class VKAuth: CAPPlugin, VKSdkDelegate, VKSdkUIDelegate {
         sdkInstance = VKSdk.initialize(withAppId: VK_APP_ID)
         sdkInstance?.register(self)
         sdkInstance?.uiDelegate = self
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(self.onCustomUrlOpen), name: Notification.Name(CAPNotifications.URLOpen.name()), object: nil)
+
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(self.onCustomUrlOpen),
+            name: Notification.Name(CAPNotifications.URLOpen.name()),
+            object: nil)
         
         call.success([
-            "value": "Pizda blyat \(VK_APP_ID)"
+            "message": "Success init with vk\(VK_APP_ID)"
         ])
     }
     
     
     @objc func auth(_ call: CAPPluginCall) {
-        let scope  = call.getArray("scope", String.self) ?? ["offline",
-        "email"]
-        print("SCOPE: \(scope)")
+        if sdkInstance == nil {
+            call.error("SDK is not initialized, please Initialize plugin before call auth method!")
+            return
+        }
+        
+        let scope  = call.getArray("scope", String.self) ?? ["offline", "email"]
+        
         DispatchQueue.main.async {
             VKSdk.authorize(scope)
         }
+        
         call.success([
-            "value": "Pizda blyat \(VK_APP_ID)"
+            "message": "Success auth request"
         ])
     }
     
