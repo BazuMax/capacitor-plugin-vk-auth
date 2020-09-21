@@ -4,4 +4,6 @@
     <string name="title_activity_main">vk-auth-tests</string>
     <string name="package_name">com.bazumax.capacitor.vkauth.test</string>
     <string name="custom_url_scheme">com.bazumax.capacitor.vkauth.test</string>
+
+    <integer name="com_vk_sdk_AppId">7559330</integer>
 </resources>
