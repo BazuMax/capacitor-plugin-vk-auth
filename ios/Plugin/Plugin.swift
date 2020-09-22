@@ -89,14 +89,19 @@ public class VKAuth: CAPPlugin, VKSdkDelegate, VKSdkUIDelegate {
         }
         
         let scope  = call.getArray("scope", String.self) ?? ["offline", "email"]
-        
-        DispatchQueue.main.async {
-            VKSdk.authorize(scope)
+        VKSdk.wakeUpSession(scope) { (state, error) in
+            if (state == VKAuthorizationState.authorized) {
+                VKSdk.forceLogout();
+            }
+            
+            DispatchQueue.main.async {
+                VKSdk.authorize(scope)
+            }
+            
+            call.success([
+                "message": "Success auth request"
+            ])
         }
-        
-        call.success([
-            "message": "Success auth request"
-        ])
     }
     
     
