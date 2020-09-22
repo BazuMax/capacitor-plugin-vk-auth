@@ -10,6 +10,14 @@ Use NPM
 npm install capacitor-plugin-vk-auth --save
 ```
 
+## Using
+```javascript
+VKAuth.initWithId({ id: '7569443' })
+VKAuth.auth({ scope: ['offline'] });
+VKAuth.addListener("vkAuthFinished", (info) => {
+    console.log("vkAuthFinished was fired", JSON.stringify(info, null, 2));
+});
+```
 
 ## Android
 
