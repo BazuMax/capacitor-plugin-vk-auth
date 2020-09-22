@@ -42,7 +42,9 @@
   "keywords": [
     "capacitor",
     "plugin",
-    "native"
+    "native",
+    "vk",
+    "auth"
   ],
   "capacitor": {
     "ios": {
@@ -56,9 +58,9 @@
   "swiftlint": "@ionic/swiftlint-config",
   "repository": {
     "type": "git",
-    "url": "d"
+    "url": "https://github.com/BazuMax/capacitor-plugin-vk-auth.git"
   },
   "bugs": {
-    "url": "d/issues"
+    "url": "https://github.com/BazuMax/capacitor-plugin-vk-auth/issues"
   }
 }
