@@ -1,14 +1,15 @@
 package com.bazumax.plugins.vk
 
+import android.app.Activity
 import android.content.Intent
 import com.getcapacitor.*
+import com.getcapacitor.annotation.CapacitorPlugin
 import com.vk.api.sdk.VK
 import com.vk.api.sdk.auth.VKAccessToken
 import com.vk.api.sdk.auth.VKAuthCallback
 import com.vk.api.sdk.auth.VKScope
-import okhttp3.internal.notify
 
-@NativePlugin(
+@CapacitorPlugin(
         // VK AuthResult request code
         requestCodes= [282]
 )
@@ -26,9 +27,10 @@ class VKAuth : Plugin() {
     fun auth(call: PluginCall) {
         val value = call.getString("id")
 
-        val scope = call.getArray("scope", JSArray(arrayOf("offline"))).toList<String>();
+        
+        val scope = call.getArray("scope").toList<String>();
         val vkScope = VKScope.values().filter { l ->  l.toString().toLowerCase() in scope }
-        VK.login(bridge.activity, vkScope)
+        VK.login(getBridge().activity, vkScope)
 
         val ret = JSObject()
         ret.put("id", value + "kek")

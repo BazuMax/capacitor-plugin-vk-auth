@@ -9,13 +9,13 @@ import VK_ios_sdk
 @objc(VKAuth)
 public class VKAuth: CAPPlugin, VKSdkDelegate, VKSdkUIDelegate {
     public func vkSdkShouldPresent(_ controller: UIViewController!) {
-        if (self.bridge.viewController.presentedViewController != nil) {
-            self.bridge.viewController.dismiss(animated: true, completion: {
-                self.bridge.viewController.present(controller, animated: true, completion: {
+        if (self.bridge?.viewController?.presentedViewController != nil) {
+            self.bridge?.viewController!.dismiss(animated: true, completion: {
+                self.bridge?.viewController!.present(controller, animated: true, completion: {
                 })
             })
         } else {
-            self.bridge.viewController.present(controller, animated: true, completion: {
+            self.bridge?.viewController!.present(controller, animated: true, completion: {
             })
         }
     }
