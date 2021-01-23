@@ -50,3 +50,7 @@ Insert vkID into your `Info.plist` file like this
 
 ### Only for IOS 9
 [Click to open settings for IOS 9](https://vk.com/dev/ios_sdk?f=1.2.%20%D0%98%D0%B7%D0%BC%D0%B5%D0%BD%D0%B5%D0%BD%D0%B8%D1%8F%20%D0%B4%D0%BB%D1%8F%20iOS%209)
+
+
+## Support
+For any support create an issue and describe your problem, we can help you with our plugin ;)
