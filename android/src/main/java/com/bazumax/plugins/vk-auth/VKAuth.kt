@@ -1,6 +1,5 @@
 package com.bazumax.plugins.vk
 
-import android.app.Activity
 import android.content.Intent
 import com.getcapacitor.*
 import com.getcapacitor.annotation.CapacitorPlugin
@@ -30,7 +29,7 @@ class VKAuth : Plugin() {
         
         val scope = call.getArray("scope").toList<String>();
         val vkScope = VKScope.values().filter { l ->  l.toString().toLowerCase() in scope }
-        VK.login(getBridge().activity, vkScope)
+        VK.login(activity, vkScope)
 
         val ret = JSObject()
         ret.put("id", value + "kek")
