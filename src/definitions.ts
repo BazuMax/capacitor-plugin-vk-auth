@@ -1,10 +1,10 @@
 declare module '@capacitor/core' {
   interface PluginRegistry {
-    VKAuth: VKAuthPlugin;
+    VKAuth: VKAuth;
   }
 }
 
-export interface VKAuthPlugin {
+export interface VKAuth {
   initWithId(options: { id: string }): Promise<{ value: string }>;
-  auth(options: { scope: Array<string> }): Promise<{ value: any }>;
+  auth(options: { scope: string[] }): Promise<{ value: any }>;
 }

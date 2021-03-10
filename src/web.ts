@@ -1,7 +1,8 @@
 import { WebPlugin } from '@capacitor/core';
-import { VKAuthPlugin } from './definitions';
 
-export class VKAuthWeb extends WebPlugin implements VKAuthPlugin {
+import type { VKAuth } from './definitions';
+
+export class VKAuthWeb extends WebPlugin implements VKAuth {
   constructor() {
     super({
       name: 'VKAuth',
@@ -19,10 +20,3 @@ export class VKAuthWeb extends WebPlugin implements VKAuthPlugin {
     return Promise.resolve({ value: options });
   }
 }
-
-const VKAuth = new VKAuthWeb();
-
-export { VKAuth };
-
-import { registerWebPlugin } from '@capacitor/core';
-registerWebPlugin(VKAuth);
