@@ -1,6 +1,7 @@
 package com.bazumax.plugins.vk
 
 import android.content.Intent
+import androidx.activity.result.ActivityResult
 import com.getcapacitor.*
 import com.getcapacitor.annotation.CapacitorPlugin
 import com.vk.api.sdk.VK
@@ -8,10 +9,7 @@ import com.vk.api.sdk.auth.VKAccessToken
 import com.vk.api.sdk.auth.VKAuthCallback
 import com.vk.api.sdk.auth.VKScope
 
-@CapacitorPlugin(
-        // VK AuthResult request code
-        requestCodes= [282]
-)
+@CapacitorPlugin
 class VKAuth : Plugin() {
     @PluginMethod
     fun initWithId(call: PluginCall) {
@@ -30,14 +28,14 @@ class VKAuth : Plugin() {
         val scope = call.getArray("scope").toList<String>();
         val vkScope = VKScope.values().filter { l ->  l.toString().toLowerCase() in scope }
         VK.login(activity, vkScope)
-
-        val ret = JSObject()
-        ret.put("id", value + "kek")
-        call.success(ret)
+        val intent = Intent("com.vkontakte.android.action.SDK_AUTH")
+        startActivityForResult(call, intent, "vkLoginResult")
     }
 
 
-    override fun handleOnActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+
+
+     private fun vkLoginResult(call: PluginCall, result: ActivityResult) {
         val callback = object: VKAuthCallback {
             override fun onLogin(token: VKAccessToken) {
                 // User passed authorization
@@ -59,8 +57,7 @@ class VKAuth : Plugin() {
                 notifyListeners("vkAuthFinished",  ret)
             }
         }
-        if (data == null || !VK.onActivityResult(requestCode, resultCode, data, callback)) {
-            super.handleOnActivityResult(requestCode, resultCode, data)
-        }
+
+        VK.onActivityResult(282, result.resultCode, result.data, callback);
     }
 }
