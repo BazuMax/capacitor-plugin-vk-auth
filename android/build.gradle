@@ -55,5 +55,5 @@ dependencies {
     implementation "androidx.core:core-ktx:+"
     implementation "androidx.appcompat:appcompat:+"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'com.vk:androidsdk:2.3.0'
+    implementation 'com.vk:android-sdk-core:3.1.0'
 }

@@ -1,13 +1,16 @@
 package com.bazumax.plugins.vk
 
 import android.content.Intent
+import android.util.Log
 import androidx.activity.result.ActivityResult
 import com.getcapacitor.*
+import com.getcapacitor.annotation.ActivityCallback
 import com.getcapacitor.annotation.CapacitorPlugin
 import com.vk.api.sdk.VK
-import com.vk.api.sdk.auth.VKAccessToken
-import com.vk.api.sdk.auth.VKAuthCallback
-import com.vk.api.sdk.auth.VKScope
+import com.vk.api.sdk.VK.initialize
+import com.vk.api.sdk.auth.*
+import com.vk.api.sdk.ui.VKWebViewAuthActivity
+import com.vk.api.sdk.utils.VKUtils
 
 @CapacitorPlugin
 class VKAuth : Plugin() {
@@ -15,6 +18,8 @@ class VKAuth : Plugin() {
     fun initWithId(call: PluginCall) {
         val value = call.getString("id")
 
+//        Log.w("VKPlugin","AppID: " + VK.getAppId(context))
+        VK.initialize(context)
 
         val ret = JSObject()
         ret.put("id", value + "kek")
@@ -24,18 +29,32 @@ class VKAuth : Plugin() {
     fun auth(call: PluginCall) {
         val value = call.getString("id")
 
-        
         val scope = call.getArray("scope").toList<String>();
         val vkScope = VKScope.values().filter { l ->  l.toString().toLowerCase() in scope }
-        VK.login(activity, vkScope)
-        val intent = Intent("com.vkontakte.android.action.SDK_AUTH")
-        startActivityForResult(call, intent, "vkLoginResult")
+
+
+        val params = VKAuthParams(VK.getAppId(activity), scope = vkScope)
+
+        val VK_APP_AUTH_ACTION = "com.vkontakte.android.action.SDK_AUTH"
+        val VK_APP_PACKAGE_ID = "com.vkontakte.android"
+        if (VKUtils.isIntentAvailable(activity, VK_APP_AUTH_ACTION, null, VK_APP_PACKAGE_ID)) {
+            val intent = Intent(VK_APP_AUTH_ACTION, null).apply {
+                setPackage(VK_APP_PACKAGE_ID)
+                putExtras(params.toExtraBundle())
+            }
+            startActivityForResult(call, intent, "vkLoginResult")
+            startActivityForResult(call, intent, "vkLoginResult")
+        } else {
+            val intent = Intent(activity, VKWebViewAuthActivity::class.java)
+                    .putExtra(VKWebViewAuthActivity.VK_EXTRA_AUTH_PARAMS, params.toBundle())
+            startActivityForResult(call, intent, "vkLoginResult")
+        }
     }
 
 
 
-
-     private fun vkLoginResult(call: PluginCall, result: ActivityResult) {
+    @ActivityCallback
+    private fun vkLoginResult(call: PluginCall, result: ActivityResult) {
         val callback = object: VKAuthCallback {
             override fun onLogin(token: VKAccessToken) {
                 // User passed authorization
@@ -46,7 +65,7 @@ class VKAuth : Plugin() {
 //                        .put("expiresIn", token.)
                         .put("userId", token.userId)
                         .put("email", token.email)
-                notifyListeners("vkAuthFinished",  ret)
+                notifyListeners("vkAuthFinished", ret)
             }
 
             override fun onLoginFailed(errorCode: Int) {
@@ -54,7 +73,7 @@ class VKAuth : Plugin() {
                 val ret = JSObject()
                         .put("result", false)
                         .put("error", errorCode)
-                notifyListeners("vkAuthFinished",  ret)
+                notifyListeners("vkAuthFinished", ret)
             }
         }
 
